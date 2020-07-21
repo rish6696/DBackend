@@ -1,0 +1,38 @@
+{
+  "name": "dash-backend",
+  "version": "1.0.0",
+  "description": "api server for dash applications",
+  "main": "build/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-dev": "tsc -w",
+    "start-run": " nodemon --exec ts-node --files ./src/index.ts",
+    "start-dev": "concurrently  \"npm run build-dev\" \" npm run start-run\"  ",
+    "build-production": "tsc",
+    "start-production": "pm2 start build/index.js",
+    "pretty": "prettier --write \"./**/*.{ts,json}\""
+  },
+  "author": "Rishabh Sharma",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/joi": "^17.1.1",
+    "@types/bcrypt": "^3.0.0",
+    "@types/express": "^4.17.7",
+    "@types/hapi__joi": "^17.1.4",
+    "@types/jsonwebtoken": "^8.5.0",
+    "@types/mongoose": "^5.7.31",
+    "@types/redis": "^2.8.25",
+    "bcrypt": "^5.0.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-joi-validation": "^4.0.3",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.24",
+    "redis": "^3.0.2"
+  },
+  "devDependencies": {
+    "concurrently": "^5.2.0",
+    "nodemon": "^2.0.4",
+    "prettier": "^2.0.5"
+  }
+}
