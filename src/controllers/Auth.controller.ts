@@ -6,12 +6,13 @@ import { verifyToken, logoutRestaurant } from "../helper";
 import { getData, client } from "../redisClient";
 import JWT from "jsonwebtoken";
 import { jwtKeyAuth, tokenExpiryTime } from "../config";
+import {  USER_NOT_FOUND, WRONG_PASSWORD, INVALID_REFRESH_TOKEN, UNAUTHORIZED_REQUEST, REFRESH_TOKEN_EXPIRED } from '../errorConstants'
 
 export async function loginRestaurantController(
   req: Request,
   res: Response,
   next: NextFunction
-): Promise<any> {
+): Promise<void> {
   const { username, password } = req.body as LoginRestaurantInterface;
   const Restaurant = restaurantModel();
 
@@ -22,10 +23,10 @@ export async function loginRestaurantController(
   ]);
 
   if (!user || user.length == 0)
-    return next(new APIError(401, "User not Found"));
+    return next(new APIError(401, USER_NOT_FOUND));
   //const result = await Bcrypt.compare( password , user[0].password);
   if (password.localeCompare(user[0].password) !== 0)
-    next(new APIError(401, "Wrong Password"));
+    next(new APIError(401, WRONG_PASSWORD));
   req.userId = user[0]._id;
   logoutRestaurant(user[0]._id);
   next();
@@ -48,23 +49,23 @@ export async function getAuthTokenFromRefreshToken(
   const { refreshToken } = req.body as { refreshToken: string };
   const verifyResult = verifyToken(refreshToken, false);
   if (verifyResult.status === false)
-    return next(new APIError(401, "Invalid refresh Token"));
+    return next(new APIError(401,INVALID_REFRESH_TOKEN ));
 
   const oldTokenString = await getData(verifyResult.result);
 
-  if (!oldTokenString) return next(new APIError(401, "Unauthorized request"));
+  if (!oldTokenString) return next(new APIError(401, UNAUTHORIZED_REQUEST));
 
   const oldTokens = JSON.parse(oldTokenString) as {
     authToken: string;
     refreshToken: string;
   };
   if (oldTokens.refreshToken.localeCompare(refreshToken) !== 0)
-    return next(new APIError(401, "Refresh Token Expired"));
+    return next(new APIError(401, REFRESH_TOKEN_EXPIRED));
 
   const authVerify = verifyToken(oldTokens.authToken, true);
   if (authVerify.status === true) {
     logoutRestaurant(refreshToken);
-    return next(new APIError(401, "Unauthorized Request"));
+    return next(new APIError(401, UNAUTHORIZED_REQUEST));
   }
   const authTokenNew = JWT.sign(
     { userId: verifyResult.result },

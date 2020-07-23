@@ -5,6 +5,7 @@ import { dbUrl, env, port } from "./config";
 import { development } from "./constants";
 import { APIError } from "./utilities/APIError";
 import { errorHandler } from "./middlewares/error.middleware";
+import { NOT_FOUND } from "./errorConstants";
 
 const app = express();
 
@@ -22,7 +23,7 @@ mongoose.connect(
 );
 
 app.use((req: Request, res: Response, next: NextFunction) => {
-  next(new APIError(404, "Not found"));
+  next(new APIError(404, NOT_FOUND));
 });
 
 app.use(errorHandler);

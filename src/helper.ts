@@ -1,6 +1,7 @@
 import JWT from "jsonwebtoken";
 import { jwtKeyAuth, jwtKeyRefreshToken } from "./config";
 import { removeKey } from "./redisClient";
+import { INVALID_AUTH_TOKEN } from "./errorConstants";
 
 export function verifyToken(
   token: string,
@@ -15,7 +16,7 @@ export function verifyToken(
     };
     return { status: true, result: verified.userId };
   } catch (err) {
-    return { status: false, result: "Invalid token" };
+    return { status: false, result: INVALID_AUTH_TOKEN };
   }
 }
 
