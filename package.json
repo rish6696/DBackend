@@ -15,24 +15,29 @@
   "author": "Rishabh Sharma",
   "license": "ISC",
   "dependencies": {
-    "@hapi/joi": "^17.1.1",
+    "@hapi/joi": "^17.0.0",
+    "@types/crypto-js": "^3.1.47",
     "bcrypt": "^5.0.0",
+    "crypto-js": "^4.0.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-joi-validation": "^4.0.3",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.24",
+    "nodemailer": "^6.4.10",
     "redis": "^3.0.2"
   },
   "devDependencies": {
-    "concurrently": "^5.2.0",
-    "nodemon": "^2.0.4",
-    "prettier": "^2.0.5",
     "@types/bcrypt": "^3.0.0",
     "@types/express": "^4.17.7",
     "@types/hapi__joi": "^17.1.4",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/mongoose": "^5.7.31",
-    "@types/redis": "^2.8.25"
+    "@types/nodemailer": "^6.4.0",
+    "@types/redis": "^2.8.25",
+    "concurrently": "^5.2.0",
+    "joi-extract-type": "^15.0.8",
+    "nodemon": "^2.0.4",
+    "prettier": "^2.0.5"
   }
 }

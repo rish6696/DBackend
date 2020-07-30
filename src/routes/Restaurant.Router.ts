@@ -24,5 +24,5 @@ restaurantRoute
   );
 
 restaurantRoute
-  .route("/createRestaurant")
+  .route("/create")
   .post(validator.body(createRestaurantValidator), createRestaurant);

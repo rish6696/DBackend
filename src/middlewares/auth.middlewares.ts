@@ -1,8 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 import JWT from "jsonwebtoken";
-import { jwtKeyAuth, jwtKeyRefreshToken, tokenExpiryTime } from "../config";
+import {
+  jwtKeyAuth,
+  jwtKeyRefreshToken,
+  tokenExpiryTime,
+  createPasswordSecretKey,
+} from "../config";
 import { client } from "../redisClient";
-import { verifyToken } from "../helper";
+import { verifyJwtToken } from "../helper";
 import { APIError } from "../utilities/APIError";
 
 export async function assignJWT(req: Request, res: Response) {
@@ -21,9 +26,11 @@ export async function authenticateJWT(
   next: NextFunction
 ) {
   const { authorization } = req.headers as { authorization: string };
-  const isAuth =
-    req.path.localeCompare("/logoutRestaurant") === 0 ? false : true;
-  const verifyResult = verifyToken(authorization, isAuth);
+  const jwtSecretKey: string =
+    req.path.localeCompare("/logoutRestaurant") === 0
+      ? jwtKeyRefreshToken
+      : jwtKeyAuth;
+  const verifyResult = verifyJwtToken(authorization, jwtSecretKey);
   if (verifyResult.status === true) {
     req.userId = verifyResult.result;
     return next();

@@ -1,21 +1,24 @@
 import Joi, { ObjectSchema, required } from "@hapi/joi";
 
 export const createRestaurantValidator: ObjectSchema = Joi.object({
-  name: Joi.string().required(),
-  emails: Joi.array().items(Joi.string()).required(),
-  phones: Joi.array().items(Joi.string()).required(),
-  filter: Joi.array().items(Joi.string()).required(),
-  qRCode: Joi.string().required(),
   restaurantId: Joi.string().required(),
-  admins: Joi.array()
-    .items(
-      Joi.object({
-        name: Joi.string().required(),
-        username: Joi.string().required(),
-        password: Joi.string().required(),
-        permissions: Joi.array().items(Joi.string()).required(),
-        roleId: Joi.number().required(),
-      })
-    )
-    .required(),
+  brandName: Joi.string().required(),
+  restaurantName: Joi.string().required(),
+  restaurantType: Joi.string().required(),
+  email: Joi.string().email().required(),
+  phone: Joi.string().regex(new RegExp("^[0-9]{10}$")).required(),
+  ownerName: Joi.string().required(),
+  addresses: Joi.array().items(
+    Joi.object({
+      address: Joi.string().required(),
+      city: Joi.string().required(),
+      state: Joi.string().required(),
+      country: Joi.string().required(),
+      pin: Joi.string().required(),
+    })
+  ),
+  themeColor: Joi.string().required(),
+  restaurantLogo: Joi.string().required(),
+  brandLogo: Joi.string().required(),
+  backgroundVideo: Joi.string().required(),
 });
