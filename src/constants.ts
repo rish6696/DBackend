@@ -7,6 +7,6 @@ export const createPasswordMailHtml = (
   logoUrl: string,
   _id: string
 ): string => {
-  const url = encodeURI(`?token=${encryptedData}&_id=${_id}&logo=${logoUrl}`);
+  const url = `?token=${encodeURIComponent(encryptedData)}&_id=${_id}&logo=${encodeURIComponent(logoUrl)}`;
   return `<h1> To create your Password,click here ${url}<h1/>`;
 };

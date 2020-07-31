@@ -1,16 +1,16 @@
 import express, { Router } from "express";
 import {
-  loginRestaurantController,
-  getAuthTokenFromRefreshToken,
-  logoutRestaurantController,
+  loginController,
+  getAuthTokenFromRefreshTokenController,
+  logoutController,
   validatePasswordTokenController,
   createPasswordController,
   forgotPasswordController,
-  resetOwnerPassword,
-} from "../controllers/Auth.controller";
+  resetOwnerPasswordController,
+} from "../controllers/Auth.Restaurant.controller";
 import { createValidator, ExpressJoiInstance } from "express-joi-validation";
 import {
-  loginRestaurantValidator,
+  loginValidator,
   refreshTokenRequestValidator,
   protectedRoutesValidator,
   validatePasswordQueryValidator,
@@ -18,29 +18,29 @@ import {
   createRestaurantPasswordValidator,
   forgotPasswordValidator,
   resetOwnerPasswordValidator,
-} from "../validators/Auth.validator";
-import { assignJWT, authenticateJWT } from "../middlewares/auth.middlewares";
+} from "../validators/Auth.restaurant.validator";
+import { assignJWT } from "../middlewares/auth.middlewares";
 
 const validator: ExpressJoiInstance = createValidator({});
 
-export const authRouter: Router = express.Router();
+export const authRestaurantRouter: Router = express.Router();
 
-authRouter
+authRestaurantRouter
   .route("/resetPassword/owner")
-  .post(validator.body(resetOwnerPasswordValidator), resetOwnerPassword);
+  .post(validator.body(resetOwnerPasswordValidator), resetOwnerPasswordController);
 
-authRouter
+authRestaurantRouter
   .route("/forgotPassword")
   .post(validator.body(forgotPasswordValidator), forgotPasswordController);
 
-authRouter
+authRestaurantRouter
   .route("/createPassword")
   .post(
     validator.body(createRestaurantPasswordValidator),
     createPasswordController
   );
 
-authRouter
+authRestaurantRouter
   .route("/validatePasswordToken")
   .get(
     validator.query(validatePasswordQueryValidator),
@@ -48,25 +48,24 @@ authRouter
     validatePasswordTokenController
   );
 
-authRouter
-  .route("/logoutRestaurant")
+authRestaurantRouter
+  .route("/logout")
   .post(
     validator.headers(protectedRoutesValidator),
-    authenticateJWT,
-    logoutRestaurantController
+    logoutController
   );
 
-authRouter
+authRestaurantRouter
   .route("/refreshAuthToken")
   .post(
     validator.body(refreshTokenRequestValidator),
-    getAuthTokenFromRefreshToken
+    getAuthTokenFromRefreshTokenController
   );
 
-authRouter
-  .route("/loginRestaurant")
+authRestaurantRouter
+  .route("/login")
   .post(
-    validator.body(loginRestaurantValidator),
-    loginRestaurantController,
+    validator.body(loginValidator),
+    loginController,
     assignJWT
   );

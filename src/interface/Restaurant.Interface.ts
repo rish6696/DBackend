@@ -1,8 +1,5 @@
 import Mongoose from "mongoose";
-import { ValidatedRequestSchema, ContainerTypes } from "express-joi-validation";
-import * as joi from "@hapi/joi";
 import "joi-extract-type";
-import { createRestaurantValidator } from "../validators/Restaurant.validator";
 
 export interface RestaurantInterface extends Mongoose.Document {
   restaurantId: string;

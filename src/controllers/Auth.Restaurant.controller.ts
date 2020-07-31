@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import { restaurantModel } from "../models/model.index";
-import { LoginRestaurantInterface } from "../interface/Auth.interface";
 import { APIError } from "../utilities/APIError";
 import Bcrypt from "bcrypt";
 import {
@@ -28,50 +27,54 @@ import {
   REFRESH_TOKEN_EXPIRED,
   INVALID_HEADER_VALUE,
 } from "../errorConstants";
+
 import {
-  RestaurantInterface,
-  AdminInterface,
-} from "../interface/RestrauManagement.interface";
-import {
-  createPasswordMailSubject,
-  createPasswordMailHtml,
   forgotPasswordMailSubject,
 } from "../constants";
 import { Types } from "mongoose";
+import { AdminInterface } from "../interface/Restaurant.Interface";
 
-export async function loginRestaurantController(
+export async function loginController(
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> {
-  const { username, password } = req.body as LoginRestaurantInterface;
+  const { email, password } = req.body as {email:string,password:string};
   const Restaurant = restaurantModel();
 
-  const user = await Restaurant.aggregate([
+  const [user] = await Restaurant.aggregate([
     { $unwind: "$admins" },
-    { $match: { "admins.username": username } },
+    { $match: { "admins.email": email } },
     { $replaceRoot: { newRoot: "$admins" } },
-  ]);
+  ])as AdminInterface [];
 
-  if (!user || user.length == 0) return next(new APIError(401, USER_NOT_FOUND));
-  //const result = await Bcrypt.compare( password , user[0].password);
-  if (password.localeCompare(user[0].password) !== 0)
-    next(new APIError(401, WRONG_PASSWORD));
-  req.userId = user[0]._id;
-  logoutRestaurant(user[0]._id);
+
+  if (!user) return next(new APIError(401, USER_NOT_FOUND));
+  try {
+  const result = await Bcrypt.compare( password , user.password) 
+  if(result===false) return next(new APIError(401, WRONG_PASSWORD));
+  req.userId = user._id;
+  logoutRestaurant(user._id);
   next();
+  } catch (error) {
+    next(new APIError(401, WRONG_PASSWORD));
+  }
+  
 }
 
-export async function logoutRestaurantController(
+export async function logoutController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
-  logoutRestaurant(req.userId);
+  const { authorization } = req.headers as { authorization: string };
+  const verifyResult = verifyJwtToken(authorization,jwtKeyRefreshToken);
+  if (verifyResult.status === false) return next(new APIError(401, verifyResult.result));
+  logoutRestaurant(verifyResult.result);
   res.send({ status: true });
 }
 
-export async function getAuthTokenFromRefreshToken(
+export async function getAuthTokenFromRefreshTokenController(
   req: Request,
   res: Response,
   next: NextFunction
@@ -208,7 +211,7 @@ export const forgotPasswordController = async (
   res.send({ status: true });
 };
 
-export const resetOwnerPassword = async (
+export const resetOwnerPasswordController = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -227,5 +230,5 @@ export const resetOwnerPassword = async (
     { _id: Types.ObjectId(_id), "admins.email": verifyRes.data },
     { $set: { "admins.$.password": hash } }
   );
-  res.send(result);
+  res.send({status:true});
 };

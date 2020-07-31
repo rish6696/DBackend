@@ -1,7 +1,7 @@
 import Joi, { ObjectSchema } from "@hapi/joi";
 
-export const loginRestaurantValidator: ObjectSchema = Joi.object({
-  username: Joi.string().required(),
+export const loginValidator: ObjectSchema = Joi.object({
+  email: Joi.string().required(),
   password: Joi.string().required(),
 });
 

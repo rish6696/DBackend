@@ -1,6 +1,6 @@
 import { AdminSchema } from "./admin.model";
-import mongoose, { Mongoose } from "mongoose";
-import { boolean } from "@hapi/joi";
+import mongoose from "mongoose";
+
 
 export const restaurantSchema = new mongoose.Schema({
   restaurantId: { type: String, required: true },

@@ -1,10 +1,9 @@
 import { Response, Request, NextFunction } from "express";
 import { restaurantModel } from "../models/model.index";
-import { mailTransporter, verifyEncryptedToken } from "../helper";
+import { mailTransporter } from "../helper";
 import {
   mailUsername,
-  createPasswordSecretKey,
-  passwordSaltRound,
+  createPasswordSecretKey
 } from "../config";
 import {
   createPasswordMailSubject,
@@ -12,7 +11,7 @@ import {
 } from "../constants";
 import CryptoJS from "crypto-js";
 
-export async function createRestaurant(
+export async function createRestaurantController(
   req: Request,
   res: Response,
   next: NextFunction
@@ -51,16 +50,4 @@ export async function createRestaurant(
       savedRestaurant._id
     ),
   });
-}
-
-export async function getSomePrivateData(req: Request, res: Response) {
-  res.send({ userId: req.userId, description: "This is some protected info" });
-}
-
-export async function publicRoute(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  res.send("this is the public route");
 }
