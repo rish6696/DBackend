@@ -1,10 +1,7 @@
 import { Response, Request, NextFunction } from "express";
 import { restaurantModel } from "../models/model.index";
 import { mailTransporter } from "../helper";
-import {
-  mailUsername,
-  createPasswordSecretKey
-} from "../config";
+import { mailUsername, createPasswordSecretKey } from "../config";
 import {
   createPasswordMailSubject,
   createPasswordMailHtml,

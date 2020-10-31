@@ -28,9 +28,7 @@ import {
   INVALID_HEADER_VALUE,
 } from "../errorConstants";
 
-import {
-  forgotPasswordMailSubject,
-} from "../constants";
+import { forgotPasswordMailSubject } from "../constants";
 import { Types } from "mongoose";
 import { AdminInterface } from "../interface/Restaurant.Interface";
 
@@ -39,27 +37,25 @@ export async function loginController(
   res: Response,
   next: NextFunction
 ): Promise<void> {
-  const { email, password } = req.body as {email:string,password:string};
+  const { email, password } = req.body as { email: string; password: string };
   const Restaurant = restaurantModel();
 
-  const [user] = await Restaurant.aggregate([
+  const [user] = (await Restaurant.aggregate([
     { $unwind: "$admins" },
     { $match: { "admins.email": email } },
     { $replaceRoot: { newRoot: "$admins" } },
-  ])as AdminInterface [];
-
+  ])) as AdminInterface[];
 
   if (!user) return next(new APIError(401, USER_NOT_FOUND));
   try {
-  const result = await Bcrypt.compare( password , user.password) 
-  if(result===false) return next(new APIError(401, WRONG_PASSWORD));
-  req.userId = user._id;
-  logoutRestaurant(user._id);
-  next();
+    const result = await Bcrypt.compare(password, user.password);
+    if (result === false) return next(new APIError(401, WRONG_PASSWORD));
+    req.userId = user._id;
+    logoutRestaurant(user._id);
+    next();
   } catch (error) {
     next(new APIError(401, WRONG_PASSWORD));
   }
-  
 }
 
 export async function logoutController(
@@ -68,8 +64,9 @@ export async function logoutController(
   next: NextFunction
 ) {
   const { authorization } = req.headers as { authorization: string };
-  const verifyResult = verifyJwtToken(authorization,jwtKeyRefreshToken);
-  if (verifyResult.status === false) return next(new APIError(401, verifyResult.result));
+  const verifyResult = verifyJwtToken(authorization, jwtKeyRefreshToken);
+  if (verifyResult.status === false)
+    return next(new APIError(401, verifyResult.result));
   logoutRestaurant(verifyResult.result);
   res.send({ status: true });
 }
@@ -230,5 +227,5 @@ export const resetOwnerPasswordController = async (
     { _id: Types.ObjectId(_id), "admins.email": verifyRes.data },
     { $set: { "admins.$.password": hash } }
   );
-  res.send({status:true});
+  res.send({ status: true });
 };

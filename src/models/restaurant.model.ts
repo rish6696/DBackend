@@ -1,7 +1,6 @@
 import { AdminSchema } from "./admin.model";
 import mongoose from "mongoose";
 
-
 export const restaurantSchema = new mongoose.Schema({
   restaurantId: { type: String, required: true },
   brandName: { type: String, required: true },

@@ -30,7 +30,6 @@ export function verifyJwtToken(
   }
 }
 
-
 export async function logoutRestaurant(userId: string) {
   const res = await removeKey(userId);
 }
@@ -48,14 +47,14 @@ export const verifyEncryptedToken = async (
   token: string,
   _id: string
 ): Promise<{ status: boolean; data: string }> => {
-  
   const bytes: DecryptedMessage = CryptoJS.AES.decrypt(
     decodeURIComponent(token),
     createPasswordSecretKey
   );
   try {
     const decryptedData = bytes.toString(CryptoJS.enc.Utf8);
-    if (decryptedData.length === 0) return { status: false, data: INVALID_TOKEN };
+    if (decryptedData.length === 0)
+      return { status: false, data: INVALID_TOKEN };
     const Restaurant = restaurantModel();
     const restaurant = await Restaurant.findById(decodeURI(_id));
     if (!restaurant) return { status: false, data: INVALID_ID };

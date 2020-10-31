@@ -27,7 +27,10 @@ export const authRestaurantRouter: Router = express.Router();
 
 authRestaurantRouter
   .route("/resetPassword/owner")
-  .post(validator.body(resetOwnerPasswordValidator), resetOwnerPasswordController);
+  .post(
+    validator.body(resetOwnerPasswordValidator),
+    resetOwnerPasswordController
+  );
 
 authRestaurantRouter
   .route("/forgotPassword")
@@ -50,10 +53,7 @@ authRestaurantRouter
 
 authRestaurantRouter
   .route("/logout")
-  .post(
-    validator.headers(protectedRoutesValidator),
-    logoutController
-  );
+  .post(validator.headers(protectedRoutesValidator), logoutController);
 
 authRestaurantRouter
   .route("/refreshAuthToken")
@@ -64,8 +64,4 @@ authRestaurantRouter
 
 authRestaurantRouter
   .route("/login")
-  .post(
-    validator.body(loginValidator),
-    loginController,
-    assignJWT
-  );
+  .post(validator.body(loginValidator), loginController, assignJWT);

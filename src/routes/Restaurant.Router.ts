@@ -1,7 +1,5 @@
 import express, { Router } from "express";
-import {
-  createRestaurantController
-} from "../controllers/RestaurantManagement.controller";
+import { createRestaurantController } from "../controllers/RestaurantManagement.controller";
 import { createValidator, ExpressJoiInstance } from "express-joi-validation";
 import { createRestaurantValidator } from "../validators/Restaurant.validator";
 
